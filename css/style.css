@@ -1,0 +1,80 @@
+/* Ajustes mínimos sobre o Bootstrap */
+
+body {
+  background-color: #fff;
+}
+
+#pix-qr {
+  max-width: 200px;
+}
+
+.progress {
+  height: 12px;
+}
+
+/* Fotos no mobile: duas colunas em estilo masonry */
+.fotos {
+  columns: 2;
+  column-gap: 0.5rem;
+}
+
+.fotos figure {
+  break-inside: avoid;
+  margin: 0 0 0.5rem;
+}
+
+.fotos img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+}
+
+/* Desktop: fotos espalhadas, sobrepostas, como jogadas no chão */
+@media (min-width: 992px) {
+  .fotos {
+    columns: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    justify-content: center;
+    padding: 1.5rem 10px 0.5rem;
+  }
+
+  .fotos figure {
+    position: relative;
+    width: 50%;
+    margin: -22px -4px;
+    padding: 8px 8px 26px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 2px;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* alturas diferentes dão o aspecto de fotos jogadas */
+  .fotos figure:nth-child(3n + 1) { aspect-ratio: 4 / 3; }
+  .fotos figure:nth-child(3n + 2) { aspect-ratio: 5 / 4; }
+  .fotos figure:nth-child(3n)     { aspect-ratio: 1 / 1; }
+
+  .fotos figure:nth-child(3n + 1) { transform: rotate(-4deg); }
+  .fotos figure:nth-child(3n + 2) { transform: rotate(3deg); }
+  .fotos figure:nth-child(3n)     { transform: rotate(-1.5deg); }
+
+  .fotos figure:nth-child(even) { margin-top: -52px; }
+
+  .fotos figure:hover {
+    transform: rotate(0deg) scale(1.03);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+  }
+
+  .fotos img {
+    height: 100%;
+    border-radius: 0;
+    object-fit: cover;
+    object-position: center 35%;
+  }
+}

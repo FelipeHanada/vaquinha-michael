@@ -1,0 +1,15 @@
+# Doacoes da vaquinha
+# Formato: data;nome;valor;mensagem
+# - data: DD/MM/AAAA ou AAAA-MM-DD
+# - nome: use "Anônimo" (ou deixe vazio) para doacoes anonimas
+# - valor: 150,00 ou 150.00 ou 150 (virgula ou ponto como decimal)
+# - mensagem: opcional
+# Linhas comecando com # sao ignoradas.
+data;nome;valor;mensagem
+05/11/2026;Maria Silva;150,00;Vão com tudo! Vocês merecem.
+05/11/2026;João Pereira;50,00;
+04/11/2026;Anônimo;200,00;Orgulho de vocês
+03/11/2026;Lucas Andrade;75,50;Bora, time!
+02/11/2026;Prof.ª Helena;300,00;Que orgulho da nossa UFF
+01/11/2026;Anônimo;40,00;
+31/10/2026;Rafael Costa;120,00;Manda ver na Latino-Americana
