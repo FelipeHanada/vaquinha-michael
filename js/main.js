@@ -94,7 +94,7 @@
       const get = (i) => (i >= 0 && i < celulas.length ? celulas[i].trim() : '');
 
       const valor = parseValor(get(iValor));
-      if (!Number.isFinite(valor) || valor <= 0) return;
+      if (!Number.isFinite(valor) || valor < 0) return;
 
       const nome = get(iNome);
       const anonimo = nome === '' || /^an[oô]nimo$/i.test(nome);

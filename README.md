@@ -39,6 +39,9 @@ fotos-originais/       # originais em alta resolução (fora do Git)
 
 ## Como atualizar as doações
 
+O arquivo já vem com **um doador de exemplo** (`Doador Exemplo`, com `0,00`) só para
+mostrar o layout. Apague essa linha e coloque as doações reais.
+
 Abra `data/doacoes.csv` e acrescente uma linha. Depois faça commit e push.
 
 ```csv
@@ -74,7 +77,7 @@ Ao adicionar uma foto nova, reduza antes de subir e mantenha proporções pareci
 
 ```json
 {
-  "meta": 12000,
+  "meta": 30000,
   "pix": {
     "chave": "f904fb1f-0a9a-4cc9-9b17-9c9cd3ab7082",
     "titular": "Felipe Eizo Hanada — Niterói",
@@ -109,10 +112,10 @@ Os caminhos do projeto são relativos, então funciona em subdiretório.
 
 ## Pendências
 
-- [ ] Definir a meta real em `data/config.json` (hoje: R$ 12.000,00 de exemplo).
+- [ ] Confirmar a meta real em `data/config.json` (hoje: R$ 30.000,00).
+- [ ] Substituir os dados de exemplo de `data/doacoes.csv` pelas doações reais.
 - [ ] Converter `assets/og-image.svg` para JPG/PNG 1200×630 (WhatsApp não exibe SVG em preview).
 - [ ] Fazer um PIX de R$ 0,01 para confirmar que o QR e o copia-e-cola funcionam.
-- [ ] Preencher `data/doacoes.csv` com as doações reais.
 
 > Só publique nome de doador com autorização. O CSV é público, então não coloque CPF,
 > e-mail, telefone ou qualquer dado pessoal nele.

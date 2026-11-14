@@ -64,24 +64,23 @@
         <div class="card">
           <div class="card-body">
             <h2 class="h5 mb-3">Doar via PIX</h2>
-            <div class="row g-3">
-              <div class="col-12 col-sm-4 text-center">
-                <img id="pix-qr" src="./assets/pix-qrcode.jpeg" alt="QR Code para doação via PIX" class="img-fluid border rounded">
-              </div>
-              <div class="col-12 col-sm-8">
-                <label class="form-label small text-secondary mb-1" for="pix-chave">Chave PIX</label>
-                <div class="input-group input-group-sm mb-3">
-                  <input class="form-control font-monospace" id="pix-chave" type="text" readonly>
-                  <button class="btn btn-outline-secondary" type="button" data-copy-target="pix-chave">Copiar</button>
-                </div>
 
-                <label class="form-label small text-secondary mb-1" for="pix-codigo">PIX copia-e-cola</label>
-                <textarea class="form-control font-monospace small mb-2" id="pix-codigo" rows="4" readonly></textarea>
-                <button class="btn btn-dark btn-sm w-100" type="button" data-copy-target="pix-codigo">Copiar código PIX</button>
-
-                <p class="small text-secondary mb-0 mt-2">Titular: <span id="pix-titular">—</span></p>
-              </div>
+            <div class="text-center mb-3">
+              <img id="pix-qr" src="./assets/pix-qrcode.jpeg" alt="QR Code para doação via PIX" class="img-fluid border rounded">
+              <p class="small text-secondary mt-2 mb-0">Aponte a câmera do app do seu banco</p>
             </div>
+
+            <label class="form-label small text-secondary mb-1" for="pix-chave">Chave PIX</label>
+            <div class="input-group input-group-sm mb-3">
+              <input class="form-control font-monospace" id="pix-chave" type="text" readonly>
+              <button class="btn btn-outline-secondary" type="button" data-copy-target="pix-chave">Copiar</button>
+            </div>
+
+            <label class="form-label small text-secondary mb-1" for="pix-codigo">PIX copia-e-cola</label>
+            <textarea class="form-control font-monospace small mb-2" id="pix-codigo" rows="3" readonly></textarea>
+            <button class="btn btn-dark btn-sm w-100" type="button" data-copy-target="pix-codigo">Copiar código PIX</button>
+
+            <p class="small text-secondary mb-0 mt-2">Titular: <span id="pix-titular">—</span></p>
           </div>
         </div>
 
@@ -136,11 +135,23 @@
 
       <div class="col-12 col-lg-4">
         <h2 class="h5 mb-3">Contato</h2>
-        <div class="d-grid gap-2">
-          <a class="btn btn-outline-dark btn-sm" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">Instagram @progcompuff</a>
+
+        <div class="d-grid gap-2 mb-3">
+          <a class="btn btn-outline-dark btn-sm" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">Instagram</a>
           <a class="btn btn-outline-dark btn-sm" data-link="whatsapp" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">Grupo no WhatsApp</a>
         </div>
-        <p class="small text-secondary mt-3 mb-0">
+
+        <p class="small text-secondary mb-1">Instagram</p>
+        <p class="small mb-3">
+          <a class="link-dark text-break" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">https://www.instagram.com/progcompuff/</a>
+        </p>
+
+        <p class="small text-secondary mb-1">WhatsApp</p>
+        <p class="small mb-3">
+          <a class="link-dark text-break" data-link="whatsapp" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq</a>
+        </p>
+
+        <p class="small text-secondary mb-0">
           Dúvidas sobre a vaquinha, comprovantes ou patrocínio? Fale com a gente por um desses canais.
         </p>
       </div>
