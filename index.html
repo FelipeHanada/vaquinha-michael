@@ -119,50 +119,53 @@
 
     <hr class="my-4 my-lg-5">
 
-    <!-- Em baixo: doadores e contato -->
-    <div class="row g-4">
+    <!-- Em baixo: doadores -->
+    <h2 class="h5 mb-1">Quem já apoiou</h2>
+    <p class="small text-secondary mb-3" id="doadores-resumo"></p>
 
-      <div class="col-12 col-lg-8">
-        <h2 class="h5 mb-1">Quem já apoiou</h2>
-        <p class="small text-secondary mb-3" id="doadores-resumo"></p>
+    <ul class="list-group mb-3" id="lista-doadores"></ul>
 
-        <ul class="list-group mb-3" id="lista-doadores"></ul>
-
-        <nav aria-label="Paginação da lista de doadores">
-          <ul class="pagination pagination-sm mb-0" id="paginacao"></ul>
-        </nav>
-      </div>
-
-      <div class="col-12 col-lg-4">
-        <h2 class="h5 mb-3">Contato</h2>
-
-        <div class="d-grid gap-2 mb-3">
-          <a class="btn btn-outline-dark btn-sm" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">Instagram</a>
-          <a class="btn btn-outline-dark btn-sm" data-link="whatsapp" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">Grupo no WhatsApp</a>
-        </div>
-
-        <p class="small text-secondary mb-1">Instagram</p>
-        <p class="small mb-3">
-          <a class="link-dark text-break" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">https://www.instagram.com/progcompuff/</a>
-        </p>
-
-        <p class="small text-secondary mb-1">WhatsApp</p>
-        <p class="small mb-3">
-          <a class="link-dark text-break" data-link="whatsapp" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq</a>
-        </p>
-
-        <p class="small text-secondary mb-0">
-          Dúvidas sobre a vaquinha, comprovantes ou patrocínio? Fale com a gente por um desses canais.
-        </p>
-      </div>
-
-    </div>
+    <nav aria-label="Paginação da lista de doadores">
+      <ul class="pagination pagination-sm mb-0" id="paginacao"></ul>
+    </nav>
 
   </main>
 
-  <footer class="border-top py-3 mt-3">
+  <footer class="border-top py-4 mt-4">
     <div class="container-xl">
-      <p class="small text-secondary mb-0">Vaquinha organizada pela equipe Michael Eles Não Ligam pra Gente.</p>
+      <div class="row g-4">
+
+        <div class="col-12 col-lg-5">
+          <p class="small fw-semibold mb-1">Michael Eles Não Ligam pra Gente</p>
+          <p class="small text-secondary mb-0">Vaquinha organizada pela equipe para a ICPC Latino-Americana.</p>
+        </div>
+
+        <div class="col-12 col-lg-7">
+          <p class="small fw-semibold mb-2">Contato</p>
+
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <a class="btn btn-outline-dark btn-sm" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">Instagram</a>
+            <a class="btn btn-outline-dark btn-sm" data-link="whatsapp" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">Grupo no WhatsApp</a>
+            <a class="btn btn-outline-dark btn-sm" data-link="contato" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">WhatsApp direto</a>
+          </div>
+
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1">
+              <span class="text-secondary">Instagram:</span>
+              <a class="link-dark text-break" data-link="instagram" href="https://www.instagram.com/progcompuff/" target="_blank" rel="noopener">https://www.instagram.com/progcompuff/</a>
+            </li>
+            <li class="mb-1">
+              <span class="text-secondary">Grupo:</span>
+              <a class="link-dark text-break" data-link="whatsapp" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq</a>
+            </li>
+            <li>
+              <span class="text-secondary">Direto:</span>
+              <a class="link-dark" data-link="contato" href="https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq" target="_blank" rel="noopener">WhatsApp do PCUFF</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
     </div>
   </footer>
 
