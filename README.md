@@ -4,8 +4,8 @@ Página estática de arrecadação de fundos para levar a equipe **Michael Eles 
 à **Competição Latino-Americana de Programação da ICPC**, publicada no GitHub Pages.
 
 - Instagram: <https://www.instagram.com/progcompuff/>
-- Grupo no WhatsApp: <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
-- WhatsApp direto: WhatsApp do PCUFF — <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
+- WhatsApp do PCUFF: <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
+- Contato Felipe (WhatsApp): WhatsApp do PCUFF — <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
 
 ## A página
 
@@ -21,7 +21,7 @@ doadores com paginação e os contatos.
 4. Fotos do time.
 5. QR Code do PIX.
 6. Código PIX copia-e-cola com botão de copiar.
-7. Links de contato no rodapé (Instagram, grupo do WhatsApp e WhatsApp direto), como botões e como URLs visíveis.
+7. Botões de contato ao lado da lista de doadores (Instagram, WhatsApp do PCUFF e contato do Felipe), com as URLs visíveis no rodapé.
 
 Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro. Sem build, sem back-end.
 
