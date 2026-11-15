@@ -7,6 +7,12 @@ Página estática de arrecadação de fundos para levar a equipe **Michael Eles 
 - WhatsApp do PCUFF: <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
 - Contato Felipe (WhatsApp): WhatsApp do PCUFF — <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
 
+Equipe:
+
+- Felipe Eizo Hanada — <https://www.linkedin.com/in/felipehanada/>
+- Luiz Eduardo Miranda — <https://www.linkedin.com/in/luizeduram/>
+- Rafael Rocha Damasceno — <https://www.linkedin.com/in/rafael-rd/>
+
 ## A página
 
 **Desktop:** duas colunas — à esquerda a meta, o progresso e o PIX; à direita as fotos,
@@ -21,7 +27,9 @@ doadores com paginação e os contatos.
 4. Fotos do time.
 5. QR Code do PIX.
 6. Código PIX copia-e-cola com botão de copiar.
-7. Botões de contato ao lado da lista de doadores (Instagram, WhatsApp do PCUFF e contato do Felipe), com as URLs visíveis no rodapé.
+7. Botões de contato ao lado da lista de doadores (Instagram, WhatsApp do PCUFF e contato do Felipe).
+8. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante, as URLs visíveis
+   dos contatos e um aviso de que problemas na página podem ser reportados no WhatsApp do Felipe.
 
 Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro. Sem build, sem back-end.
 
@@ -34,6 +42,7 @@ js/main.js             # lê o CSV, calcula o progresso, pagina a lista, copia o
 data/config.json       # meta, chave PIX, payload e links
 data/doacoes.csv       # uma linha por doação — é o arquivo que você edita
 assets/pix-qrcode.jpeg # QR Code do PIX
+assets/logos/          # logos do Instituto de Computação (IC/UFF) e da UFF
 assets/fotos/          # fotos otimizadas usadas na página
 fotos-originais/       # originais em alta resolução (fora do Git)
 ```
@@ -69,8 +78,16 @@ não edite esses números na mão.
 
 ## Fotos
 
-As imagens em `assets/fotos/` estão com no máximo 1400 px no maior lado e ~200–300 KB cada.
+As imagens em `assets/fotos/` estão com no máximo 1400 px no maior lado e ~170–300 KB cada.
 Ao adicionar uma foto nova, reduza antes de subir e mantenha proporções parecidas.
+
+Cada foto é uma `<figure>` com uma legenda curta em `<figcaption>`, e a ordem no HTML é
+cronológica: **fase regional primeiro, fase nacional depois**.
+
+## Logos
+
+`assets/logos/ic-uff.png` e `assets/logos/uff.svg` são as logos oficiais, baixadas de
+<https://www.ic.uff.br/> e <https://www.uff.br/>. Aparecem no rodapé com 44 px de altura.
 
 ## Configuração
 
