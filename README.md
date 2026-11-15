@@ -105,7 +105,7 @@ cronológica: **fase regional primeiro, fase nacional depois**.
   "meta": 30000,
   "pix": {
     "chave": "f904fb1f-0a9a-4cc9-9b17-9c9cd3ab7082",
-    "titular": "Felipe Eizo Hanada — Niterói",
+    "titular": "Felipe Eizo Hanada (Niterói)",
     "copiaECola": "00020126...63048FD4",
     "qrCode": "assets/pix-qrcode.jpeg"
   },
