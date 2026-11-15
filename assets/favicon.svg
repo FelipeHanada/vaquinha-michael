@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Michael Eles Não Ligam pra Gente">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Balão">
   <rect width="64" height="64" fill="#ffffff"/>
-  <path d="M32 10 54 32 32 54 10 32Z" fill="#000000"/>
+  <ellipse cx="32" cy="25" rx="14" ry="17" fill="#dc3545"/>
+  <ellipse cx="26" cy="17" rx="3.5" ry="5" fill="#ffffff" opacity="0.45" transform="rotate(-20 26 17)"/>
+  <path d="M29 41.5 35 41.5 32 46.5Z" fill="#dc3545"/>
+  <path d="M32 46.5c-2.5 5 2.5 9-1.5 13" fill="none" stroke="#495057" stroke-width="1.8" stroke-linecap="round"/>
 </svg>
