@@ -1,423 +1,311 @@
 /* Lê data/config.json + data/doacoes.csv e monta a página. */
-(function () {
-  'use strict';
+import { calcularResumo, parseDoacoes } from './doacoes.js';
 
-  const CONFIG_URL = './data/config.json';
-  const CSV_URL = './data/doacoes.csv';
-  const POR_PAGINA = 6;
+const CONFIG_URL = './data/config.json';
+const CSV_URL = './data/doacoes.csv';
+const DOACOES_POR_PAGINA = 6;
 
-  const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
-  const pctFmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
-  const $ = (s) => document.querySelector(s);
+const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+const percentualFmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
+const $ = (seletor) => document.querySelector(seletor);
 
-  let doacoes = [];
-  let pagina = 1;
+const estado = {
+  doacoes: [],
+  pagina: 1
+};
 
-  document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', iniciar);
 
-  async function init() {
-    bindCopy();
-    bindColunaAdesiva();
+async function iniciar() {
+  ativarBotoesDeCopia();
+  ajustarColunaAdesiva();
 
-    try {
-      const [config, csv] = await Promise.all([getJSON(CONFIG_URL), getText(CSV_URL)]);
+  try {
+    const [config, csv] = await Promise.all([carregarJSON(CONFIG_URL), carregarTexto(CSV_URL)]);
 
-      aplicarConfig(config);
-      doacoes = parseDoacoes(csv);
-      renderProgresso(config, doacoes);
-      renderDoadores();
-    } catch (e) {
-      console.error('[vaquinha]', e);
-      mostrarErro();
-    }
+    aplicarConfig(config);
+    estado.doacoes = parseDoacoes(csv);
+    renderizarProgresso(Number(config.meta) || 0);
+    renderizarDoadores();
+  } catch (erro) {
+    console.error('[vaquinha]', erro);
+    mostrarErro();
+  }
+}
+
+/* ---------------- Rede ---------------- */
+
+async function requisitar(url) {
+  const resposta = await fetch(url, { cache: 'no-store' });
+  if (!resposta.ok) throw new Error(`HTTP ${resposta.status} em ${url}`);
+  return resposta;
+}
+
+async function carregarJSON(url) {
+  return (await requisitar(url)).json();
+}
+
+async function carregarTexto(url) {
+  return (await requisitar(url)).text();
+}
+
+/* ---------------- Render ---------------- */
+
+function aplicarConfig(config) {
+  const links = config.links || {};
+  document.querySelectorAll('[data-link]').forEach((el) => {
+    const url = links[el.dataset.link];
+    if (!url) return;
+
+    el.href = url;
+    if (el.hasAttribute('data-link-texto')) el.textContent = url;
+  });
+
+  const pix = config.pix || {};
+  definirValor('#pix-chave', pix.chave || '');
+  definirValor('#pix-codigo', pix.copiaECola || '');
+  definirTexto('#pix-titular', pix.titular || '');
+
+  const qr = $('#pix-qr');
+  if (qr && pix.qrCode) qr.src = pix.qrCode;
+}
+
+function renderizarProgresso(meta) {
+  const { total, percentual, falta } = calcularResumo(estado.doacoes, meta);
+  const percentualNaBarra = Math.min(100, percentual);
+
+  definirTexto('#valor-atual', brl.format(total));
+  definirTexto('#valor-meta', brl.format(meta));
+  definirTexto('#valor-falta', meta > 0 ? `Faltam ${brl.format(falta)}` : '');
+  definirTexto('#percentual', `${percentualFmt.format(percentual)}%`);
+
+  const barra = $('#barra-meta');
+  const preenchimento = $('#barra-fill');
+
+  if (barra) {
+    barra.setAttribute('aria-valuenow', String(Math.round(percentualNaBarra)));
+    barra.setAttribute('aria-valuetext', `${brl.format(total)} de ${brl.format(meta)}`);
+  }
+  if (preenchimento) preenchimento.style.width = `${percentualNaBarra}%`;
+
+  definirTexto(
+    '#progresso-status',
+    meta > 0 && falta <= 0 ? 'Meta atingida. Obrigado a todo mundo que ajudou!' : ''
+  );
+}
+
+function renderizarDoadores() {
+  const quantidade = estado.doacoes.length;
+  definirTexto(
+    '#doadores-resumo',
+    quantidade ? `${quantidade} doaç${quantidade === 1 ? 'ão' : 'ões'} recebida${quantidade === 1 ? '' : 's'}` : ''
+  );
+
+  estado.pagina = 1;
+  desenharDoadores();
+}
+
+function desenharDoadores() {
+  const lista = $('#lista-doadores');
+  if (!lista) return;
+
+  lista.replaceChildren();
+
+  if (!estado.doacoes.length) {
+    lista.append(criarItem('Nenhuma doação registrada ainda.'));
+    desenharPaginacao(0);
+    return;
   }
 
-  async function getJSON(url) {
-    const r = await fetch(url, { cache: 'no-store' });
-    if (!r.ok) throw new Error(`HTTP ${r.status} em ${url}`);
-    return r.json();
+  const totalPaginas = Math.ceil(estado.doacoes.length / DOACOES_POR_PAGINA);
+  estado.pagina = Math.min(Math.max(1, estado.pagina), totalPaginas);
+
+  const inicio = (estado.pagina - 1) * DOACOES_POR_PAGINA;
+  estado.doacoes
+    .slice(inicio, inicio + DOACOES_POR_PAGINA)
+    .forEach((doacao) => lista.append(criarLinhaDoador(doacao)));
+
+  desenharPaginacao(totalPaginas);
+}
+
+function criarLinhaDoador(doacao) {
+  const dados = criar('div', 'text-break');
+  dados.append(criar('div', 'fw-semibold', doacao.nome));
+
+  if (doacao.mensagem) dados.append(criar('div', 'small', doacao.mensagem));
+  if (doacao.data) dados.append(criar('div', 'small text-secondary', doacao.data.toLocaleDateString('pt-BR')));
+
+  const linha = criar('li', 'list-group-item d-flex justify-content-between align-items-start gap-3');
+  linha.append(dados, criar('span', 'text-success fw-semibold text-nowrap', brl.format(doacao.valor)));
+
+  return linha;
+}
+
+function desenharPaginacao(totalPaginas) {
+  const lista = $('#paginacao');
+  if (!lista) return;
+
+  const navegacao = lista.closest('nav');
+  lista.replaceChildren();
+
+  if (navegacao) navegacao.classList.toggle('d-none', totalPaginas <= 1);
+  if (totalPaginas <= 1) return;
+
+  adicionarBotaoPagina('Anterior', estado.pagina - 1, {
+    desativado: estado.pagina === 1,
+    titulo: 'Página anterior'
+  });
+
+  for (let numero = 1; numero <= totalPaginas; numero++) {
+    adicionarBotaoPagina(String(numero), numero, {
+      ativo: numero === estado.pagina,
+      titulo: `Página ${numero}`
+    });
   }
 
-  async function getText(url) {
-    const r = await fetch(url, { cache: 'no-store' });
-    if (!r.ok) throw new Error(`HTTP ${r.status} em ${url}`);
-    return r.text();
-  }
+  adicionarBotaoPagina('Próxima', estado.pagina + 1, {
+    desativado: estado.pagina === totalPaginas,
+    titulo: 'Próxima página'
+  });
 
-  /* ---------------- CSV ---------------- */
+  function adicionarBotaoPagina(rotulo, destino, { ativo = false, desativado = false, titulo = '' } = {}) {
+    const item = criar('li', 'page-item' + (ativo ? ' active' : '') + (desativado ? ' disabled' : ''));
+    const botao = criar('button', 'page-link', rotulo);
+    botao.type = 'button';
 
-  function parseCSV(texto, delim) {
-    const linhas = [];
-    let linha = [];
-    let campo = '';
-    let aspas = false;
+    if (titulo) botao.setAttribute('aria-label', titulo);
+    if (ativo) botao.setAttribute('aria-current', 'page');
 
-    for (let i = 0; i < texto.length; i++) {
-      const c = texto[i];
-
-      if (aspas) {
-        if (c === '"') {
-          if (texto[i + 1] === '"') { campo += '"'; i++; }
-          else aspas = false;
-        } else campo += c;
-        continue;
-      }
-
-      if (c === '"') aspas = true;
-      else if (c === delim) { linha.push(campo); campo = ''; }
-      else if (c === '\n') { linha.push(campo); linhas.push(linha); linha = []; campo = ''; }
-      else if (c !== '\r') campo += c;
-    }
-
-    if (campo !== '' || linha.length) { linha.push(campo); linhas.push(linha); }
-    return linhas;
-  }
-
-  function parseDoacoes(texto) {
-    const cabecalhoBruto = texto.trim().split('\n')[0];
-    const delim = [';', ',', '\t'].sort((a, b) => cabecalhoBruto.split(b).length - cabecalhoBruto.split(a).length)[0];
-
-    const linhas = parseCSV(texto.trim(), delim).filter(
-      (l) => l.some((c) => c.trim() !== '') && !(l[0] || '').trim().startsWith('#')
-    );
-
-    if (!linhas.length) return [];
-
-    const head = linhas.shift().map(chave);
-    const iData = head.indexOf('data');
-    const iNome = head.indexOf('nome');
-    const iValor = head.indexOf('valor');
-    const iMsg = head.indexOf('mensagem');
-
-    const lista = [];
-
-    linhas.forEach((celulas, ordem) => {
-      const get = (i) => (i >= 0 && i < celulas.length ? celulas[i].trim() : '');
-
-      const valor = parseValor(get(iValor));
-      if (!Number.isFinite(valor) || valor < 0) return;
-
-      const nome = get(iNome);
-      const anonimo = nome === '' || /^an[oô]nimo$/i.test(nome);
-
-      lista.push({
-        nome: anonimo ? 'Anônimo' : nome,
-        valor,
-        data: parseData(get(iData)),
-        mensagem: get(iMsg),
-        ordem
+    if (ativo || desativado) {
+      botao.disabled = true;
+    } else {
+      botao.addEventListener('click', () => {
+        estado.pagina = destino;
+        desenharDoadores();
       });
-    });
-
-    lista.sort((a, b) => {
-      const da = a.data ? a.data.getTime() : 0;
-      const db = b.data ? b.data.getTime() : 0;
-      return db - da || b.ordem - a.ordem;
-    });
-
-    return lista;
-  }
-
-  function chave(s) {
-    return String(s).replace(/^\uFEFF/, '').trim().toLowerCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  }
-
-  function parseValor(bruto) {
-    let s = String(bruto).replace(/[^\d.,-]/g, '');
-    if (!s) return NaN;
-    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
-    else if (/\.\d{3}(\D|$)/.test(s)) s = s.replace(/\./g, '');
-    return parseFloat(s);
-  }
-
-  function parseData(bruto) {
-    const s = String(bruto).trim();
-    if (!s) return null;
-
-    let m = s.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{2,4})$/);
-    if (m) {
-      let ano = Number(m[3]);
-      if (ano < 100) ano += 2000;
-      return new Date(ano, Number(m[2]) - 1, Number(m[1]));
     }
 
-    m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
-    if (m) return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-
-    const d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
+    item.append(botao);
+    lista.append(item);
   }
+}
 
-  /* ---------------- Render ---------------- */
+function criarItem(texto) {
+  return criar('li', 'list-group-item text-secondary', texto);
+}
 
-  function aplicarConfig(cfg) {
-    const links = cfg.links || {};
-    document.querySelectorAll('[data-link]').forEach((el) => {
-      if (links[el.dataset.link]) el.href = links[el.dataset.link];
-    });
+function criar(tag, classe, texto) {
+  const elemento = document.createElement(tag);
+  if (classe) elemento.className = classe;
+  if (texto !== undefined) elemento.textContent = texto;
+  return elemento;
+}
 
-    const pix = cfg.pix || {};
-    setVal('#pix-chave', pix.chave || '');
-    setVal('#pix-codigo', pix.copiaECola || '');
-    setTexto('#pix-titular', pix.titular || '');
+/* ---------------- Copiar ---------------- */
 
-    const qr = $('#pix-qr');
-    if (qr && pix.qrCode) qr.src = pix.qrCode;
-  }
+function ativarBotoesDeCopia() {
+  document.querySelectorAll('[data-copy-target]').forEach((botao) => {
+    botao.addEventListener('click', () => copiarAlvoDoBotao(botao));
+  });
+}
 
-  function renderProgresso(cfg, lista) {
-    const meta = Number(cfg.meta) || 0;
-    const total = lista.reduce((s, d) => s + d.valor, 0);
-    const falta = Math.max(0, meta - total);
-    const percentual = meta > 0 ? (total / meta) * 100 : 0;
+async function copiarAlvoDoBotao(botao) {
+  const alvo = document.getElementById(botao.dataset.copyTarget);
+  if (!alvo) return;
 
-    setTexto('#valor-atual', brl.format(total));
-    setTexto('#valor-meta', brl.format(meta));
-    setTexto('#valor-falta', meta > 0 ? `Faltam ${brl.format(falta)}` : '');
-    setTexto('#percentual', `${pctFmt.format(percentual)}%`);
+  const texto = ('value' in alvo ? alvo.value : alvo.textContent).trim();
+  if (!texto || !(await copiar(texto))) return;
 
-    const barra = $('#barra-meta');
-    const fill = $('#barra-fill');
+  const rotuloOriginal = botao.textContent;
+  botao.textContent = 'Copiado!';
+  setTimeout(() => { botao.textContent = rotuloOriginal; }, 2000);
+}
 
-    if (barra) {
-      barra.setAttribute('aria-valuenow', String(Math.min(100, Math.round(percentual))));
-      barra.setAttribute('aria-valuetext', `${brl.format(total)} de ${brl.format(meta)}`);
+async function copiar(texto) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(texto);
+      return true;
     }
-    if (fill) fill.style.width = `${Math.min(100, percentual)}%`;
+  } catch (_) { /* tenta o fallback abaixo */ }
 
-    setTexto('#progresso-status', meta > 0 && falta <= 0 ? 'Meta atingida. Obrigado a todo mundo que ajudou!' : '');
+  try {
+    const area = document.createElement('textarea');
+    area.value = texto;
+    area.setAttribute('readonly', '');
+    area.style.position = 'fixed';
+    area.style.opacity = '0';
+    document.body.appendChild(area);
+    area.select();
+
+    const copiou = document.execCommand('copy');
+    document.body.removeChild(area);
+    return copiou;
+  } catch (_) {
+    return false;
+  }
+}
+
+/* ---------------- Coluna que acompanha a rolagem ---------------- */
+
+/*
+ * Em telas grandes o bloco de doação fica preso enquanto a galeria rola.
+ * Quando ele é mais alto que a janela, o `top` recebe um valor negativo para
+ * que a base do bloco pare na base da tela, deixando o PIX e o convite do
+ * PCUFF à vista. Quem controla o movimento é o `position: sticky` do CSS, no
+ * compositor: nada é recalculado a cada quadro, então rolar rápido ou ir e
+ * voltar com a página não treme.
+ */
+function ajustarColunaAdesiva() {
+  const coluna = document.querySelector('.coluna-adesiva');
+  if (!coluna) return;
+
+  const desktop = window.matchMedia('(min-width: 992px)');
+
+  // A altura do bloco não muda com a rolagem: mede só no load e no resize.
+  function ajustar() {
+    coluna.style.top = '';
+    if (!desktop.matches) return;
+
+    // A margem vem do CSS (`top`), para não existir o mesmo valor em dois lugares.
+    const margem = parseFloat(window.getComputedStyle(coluna).top) || 0;
+    const base = window.innerHeight - margem - coluna.offsetHeight;
+
+    // `top` positivo já é o padrão do CSS: só mexe quando o bloco não cabe.
+    if (base < margem) coluna.style.top = `${base}px`;
   }
 
-  function renderDoadores() {
-    setTexto(
-      '#doadores-resumo',
-      doacoes.length ? `${doacoes.length} doaç${doacoes.length === 1 ? 'ão' : 'ões'} recebida${doacoes.length === 1 ? '' : 's'}` : ''
-    );
+  window.addEventListener('resize', ajustar);
+  window.addEventListener('load', ajustar);
+  desktop.addEventListener('change', ajustar);
 
-    pagina = 1;
-    desenharPagina();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(ajustar).catch(() => {});
   }
 
-  function desenharPagina() {
-    const lista = $('#lista-doadores');
-    if (!lista) return;
+  ajustar();
+}
 
-    lista.innerHTML = '';
+/* ---------------- Utilidades ---------------- */
 
-    if (!doacoes.length) {
-      lista.appendChild(item('Nenhuma doação registrada ainda.'));
-      montarPaginacao(0);
-      return;
-    }
+function definirTexto(seletor, texto) {
+  const elemento = $(seletor);
+  if (elemento) elemento.textContent = texto;
+}
 
-    const totalPaginas = Math.ceil(doacoes.length / POR_PAGINA);
-    pagina = Math.min(Math.max(1, pagina), totalPaginas);
+function definirValor(seletor, valor) {
+  const elemento = $(seletor);
+  if (elemento) elemento.value = valor;
+}
 
-    const inicio = (pagina - 1) * POR_PAGINA;
-    doacoes.slice(inicio, inicio + POR_PAGINA).forEach((d) => lista.appendChild(linhaDoador(d)));
+function mostrarErro() {
+  const dica = location.protocol === 'file:'
+    ? 'Abra a página por um servidor local (python -m http.server).'
+    : 'Não foi possível carregar data/config.json e data/doacoes.csv.';
 
-    montarPaginacao(totalPaginas);
-  }
+  definirTexto('#progresso-status', dica);
+  definirTexto('#doadores-resumo', '');
 
-  function linhaDoador(d) {
-    const li = document.createElement('li');
-    li.className = 'list-group-item d-flex justify-content-between align-items-start gap-3';
-
-    const esquerda = document.createElement('div');
-    esquerda.className = 'text-break';
-
-    const nome = document.createElement('div');
-    nome.className = 'fw-semibold';
-    nome.textContent = d.nome;
-    esquerda.appendChild(nome);
-
-    if (d.mensagem) {
-      const msg = document.createElement('div');
-      msg.className = 'small';
-      msg.textContent = d.mensagem;
-      esquerda.appendChild(msg);
-    }
-
-    if (d.data) {
-      const data = document.createElement('div');
-      data.className = 'small text-secondary';
-      data.textContent = d.data.toLocaleDateString('pt-BR');
-      esquerda.appendChild(data);
-    }
-
-    const valor = document.createElement('span');
-    valor.className = 'text-success fw-semibold text-nowrap';
-    valor.textContent = brl.format(d.valor);
-
-    li.append(esquerda, valor);
-    return li;
-  }
-
-  function montarPaginacao(totalPaginas) {
-    const lista = $('#paginacao');
-    if (!lista) return;
-
-    const wrapper = lista.closest('nav');
-    lista.innerHTML = '';
-
-    if (totalPaginas <= 1) {
-      if (wrapper) wrapper.classList.add('d-none');
-      return;
-    }
-    if (wrapper) wrapper.classList.remove('d-none');
-
-    const adicionar = (rotulo, destino, opcoes) => {
-      const { ativo = false, desativado = false, titulo = '' } = opcoes || {};
-
-      const li = document.createElement('li');
-      li.className = 'page-item' + (ativo ? ' active' : '') + (desativado ? ' disabled' : '');
-
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'page-link';
-      btn.textContent = rotulo;
-
-      if (titulo) btn.setAttribute('aria-label', titulo);
-      if (ativo) btn.setAttribute('aria-current', 'page');
-
-      if (desativado || ativo) {
-        btn.disabled = true;
-      } else {
-        btn.addEventListener('click', () => {
-          pagina = destino;
-          desenharPagina();
-        });
-      }
-
-      li.appendChild(btn);
-      lista.appendChild(li);
-    };
-
-    adicionar('Anterior', pagina - 1, { desativado: pagina === 1, titulo: 'Página anterior' });
-
-    for (let i = 1; i <= totalPaginas; i++) {
-      adicionar(String(i), i, { ativo: i === pagina, titulo: `Página ${i}` });
-    }
-
-    adicionar('Próxima', pagina + 1, { desativado: pagina === totalPaginas, titulo: 'Próxima página' });
-  }
-
-  function item(texto) {
-    const li = document.createElement('li');
-    li.className = 'list-group-item text-secondary';
-    li.textContent = texto;
-    return li;
-  }
-
-  /* ---------------- Copiar ---------------- */
-
-  function bindCopy() {
-    document.querySelectorAll('[data-copy-target]').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const alvo = document.getElementById(btn.dataset.copyTarget);
-        if (!alvo) return;
-
-        const texto = ('value' in alvo ? alvo.value : alvo.textContent).trim();
-        if (!texto) return;
-
-        if (!(await copiar(texto))) return;
-
-        const original = btn.textContent;
-        btn.textContent = 'Copiado!';
-        setTimeout(() => { btn.textContent = original; }, 2000);
-      });
-    });
-  }
-
-  async function copiar(texto) {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(texto);
-        return true;
-      }
-    } catch (_) { /* fallback abaixo */ }
-
-    try {
-      const ta = document.createElement('textarea');
-      ta.value = texto;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      const ok = document.execCommand('copy');
-      document.body.removeChild(ta);
-      return ok;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  /* ---------------- Coluna que acompanha a rolagem ---------------- */
-
-  /*
-   * Em telas grandes o bloco de doação fica preso enquanto a galeria rola.
-   * Quando ele é mais alto que a janela, o `top` recebe um valor negativo para
-   * que a base do bloco pare na base da tela, deixando o PIX e o convite do
-   * PCUFF à vista. Quem controla o movimento é o `position: sticky` do CSS, no
-   * compositor: nada é recalculado a cada quadro, então rolar rápido ou ir e
-   * voltar com a página não treme.
-   */
-  function bindColunaAdesiva() {
-    const coluna = document.querySelector('.coluna-adesiva');
-    if (!coluna) return;
-
-    const desktop = window.matchMedia('(min-width: 992px)');
-
-    // A altura do bloco não muda com a rolagem: mede só no load e no resize.
-    function ajustar() {
-      coluna.style.top = '';
-      if (!desktop.matches) return;
-
-      // A margem vem do CSS (`top`), para não existir o mesmo valor em dois lugares.
-      const margem = parseFloat(window.getComputedStyle(coluna).top) || 0;
-      const base = window.innerHeight - margem - coluna.offsetHeight;
-
-      // `top` positivo já é o padrão do CSS: só mexe quando o bloco não cabe.
-      if (base < margem) coluna.style.top = `${base}px`;
-    }
-
-    window.addEventListener('resize', ajustar);
-    window.addEventListener('load', ajustar);
-    desktop.addEventListener('change', ajustar);
-
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(ajustar).catch(() => {});
-    }
-
-    ajustar();
-  }
-
-  /* ---------------- Utilidades ---------------- */
-
-  function setTexto(sel, texto) {
-    const el = $(sel);
-    if (el) el.textContent = texto;
-  }
-
-  function setVal(sel, valor) {
-    const el = $(sel);
-    if (el) el.value = valor;
-  }
-
-  function mostrarErro() {
-    const dica = location.protocol === 'file:'
-      ? 'Abra a página por um servidor local (python -m http.server).'
-      : 'Não foi possível carregar data/config.json e data/doacoes.csv.';
-
-    setTexto('#progresso-status', dica);
-    setTexto('#doadores-resumo', '');
-
-    const lista = $('#lista-doadores');
-    if (lista) {
-      lista.innerHTML = '';
-      lista.appendChild(item(dica));
-    }
-  }
-})();
+  const lista = $('#lista-doadores');
+  if (lista) lista.replaceChildren(criarItem(dica));
+}

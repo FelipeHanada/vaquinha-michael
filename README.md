@@ -43,15 +43,15 @@ rápido não treme.
    coaches, as URLs visíveis dos contatos e um aviso de que problemas na página podem ser
    reportados no WhatsApp do PCUFF.
 
-Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro. Sem build, sem back-end.
+Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro em módulos ES. Sem build, sem back-end.
 
 ## Estrutura
 
 ```
 index.html
 css/style.css          # poucos ajustes sobre o Bootstrap
-js/main.js             # lê o CSV, calcula o progresso, pagina a lista, copia o PIX
-                       # e ajusta a coluna que acompanha a rolagem
+js/main.js             # monta a página: config, progresso, doadores, PIX e rolagem
+js/doacoes.js          # lê o CSV e calcula os totais (sem DOM)
 data/config.json       # meta, chave PIX, payload e links
 data/doacoes.csv       # uma linha por doação — é o arquivo que você edita
 assets/pix-qrcode.jpeg # QR Code do PIX
