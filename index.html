@@ -69,6 +69,36 @@
             </div>
           </div>
 
+          <div class="card mb-3" id="contagem-card" hidden>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-baseline gap-2 mb-2">
+                <h2 class="h6 mb-0">Contagem regressiva</h2>
+                <span class="small text-secondary text-end" id="contagem-periodo"></span>
+              </div>
+
+              <p class="small text-secondary mb-2" id="contagem-legenda" aria-live="polite"></p>
+
+              <div class="contagem" id="contagem-numeros" aria-hidden="true">
+                <div class="contagem-bloco">
+                  <span class="contagem-valor" id="contagem-dias">0</span>
+                  <span class="contagem-rotulo">dias</span>
+                </div>
+                <div class="contagem-bloco">
+                  <span class="contagem-valor" id="contagem-horas">00</span>
+                  <span class="contagem-rotulo">horas</span>
+                </div>
+                <div class="contagem-bloco">
+                  <span class="contagem-valor" id="contagem-minutos">00</span>
+                  <span class="contagem-rotulo">min</span>
+                </div>
+                <div class="contagem-bloco">
+                  <span class="contagem-valor" id="contagem-segundos">00</span>
+                  <span class="contagem-rotulo">seg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="card">
             <div class="card-body">
               <h2 class="h5 mb-3">Doar via PIX</h2>
@@ -182,6 +212,11 @@
       <div class="col-12 col-lg-8" id="doadores">
         <h2 class="h5 mb-1">Quem já apoiou</h2>
         <p class="small text-secondary mb-3" id="doadores-resumo"></p>
+
+        <div class="alert alert-light border small mb-3" role="note">
+          <strong>As doações entram na lista manualmente.</strong> Pode levar algumas horas até que a
+          sua apareça aqui. O comprovante do PIX é a garantia de que ela foi registrada.
+        </div>
 
         <ul class="list-group mb-3" id="lista-doadores"></ul>
 

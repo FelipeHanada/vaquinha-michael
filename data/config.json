@@ -1,5 +1,9 @@
 {
   "meta": 30000,
+  "competicao": {
+    "inicio": "2027-07-13T00:00:00-03:00",
+    "fim": "2027-07-17T23:59:59-03:00"
+  },
   "pix": {
     "chave": "f904fb1f-0a9a-4cc9-9b17-9c9cd3ab7082",
     "titular": "Felipe Eizo Hanada (Niterói)",

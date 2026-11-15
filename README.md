@@ -19,9 +19,9 @@ Coaches:
 
 ## A página
 
-**Desktop:** duas colunas — à esquerda a meta, o progresso, o PIX e o convite do PCUFF; à direita a
-galeria, com as fotos espalhadas e sobrepostas como fotos jogadas no chão. Abaixo, em largura total,
-a lista de doadores com paginação e os contatos.
+**Desktop:** duas colunas — à esquerda a meta, o progresso, a contagem regressiva, o PIX e o convite do
+PCUFF; à direita a galeria, com as fotos espalhadas e sobrepostas como fotos jogadas no chão. Abaixo,
+em largura total, a lista de doadores com paginação e os contatos.
 
 Enquanto a galeria rola, a coluna da esquerda acompanha a leitura: o bloco rola junto com a página
 e, quando termina de entrar na tela, para com a base na base da janela — deixando o PIX e o convite
@@ -29,19 +29,22 @@ do PCUFF à vista — até que a coluna acabe, pouco antes da linha que separa a
 Quem move o bloco é o `position: sticky` (no compositor, sem cálculo a cada quadro), então rolar
 rápido não treme.
 
-**Mobile:** coluna única — progresso → PIX → PCUFF → fotos (duas colunas) → doadores → contato.
+**Mobile:** coluna única — progresso → contagem regressiva → PIX → PCUFF → fotos (duas colunas) →
+doadores → contato.
 
 1. Barra de progresso com a meta de arrecadação.
 2. Indicador do valor já arrecadado (e quanto falta).
-3. Lista de doadores lida de um CSV, com paginação de 6 por página.
-4. Galeria com as fotos do time, cada uma com legenda.
-5. QR Code do PIX.
-6. Código PIX copia-e-cola com botão de copiar.
-7. Convite para o PCUFF (encontros às quintas, no laboratório 307).
-8. Botões de contato ao lado da lista de doadores (Instagram e WhatsApp do PCUFF).
-9. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante e dos
-   coaches, as URLs visíveis dos contatos e um aviso de que problemas na página podem ser
-   reportados no WhatsApp do PCUFF.
+3. Contagem regressiva para a competição, com dias, horas, minutos e segundos.
+4. Lista de doadores lida de um CSV, com paginação de 6 por página, e um aviso de que as doações
+   entram manualmente (pode levar algumas horas até aparecerem).
+5. Galeria com as fotos do time, cada uma com legenda.
+6. QR Code do PIX.
+7. Código PIX copia-e-cola com botão de copiar.
+8. Convite para o PCUFF (encontros às quintas, no laboratório 307).
+9. Botões de contato ao lado da lista de doadores (Instagram e WhatsApp do PCUFF).
+10. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante e dos
+    coaches, as URLs visíveis dos contatos e um aviso de que problemas na página podem ser
+    reportados no WhatsApp do PCUFF.
 
 Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro em módulos ES. Sem build, sem back-end.
 
@@ -50,9 +53,10 @@ Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro em módulos ES. Sem build, sem
 ```
 index.html
 css/style.css          # poucos ajustes sobre o Bootstrap
-js/main.js             # monta a página: config, progresso, doadores, PIX e rolagem
+js/main.js             # monta a página: config, progresso, contagem, doadores, PIX e rolagem
 js/doacoes.js          # lê o CSV e calcula os totais (sem DOM)
-data/config.json       # meta, chave PIX, payload e links
+js/contagem.js         # calcula a contagem regressiva da competição (sem DOM)
+data/config.json       # meta, datas da competição, chave PIX, payload e links
 data/doacoes.csv       # uma linha por doação — é o arquivo que você edita
 assets/pix-qrcode.jpeg # QR Code do PIX
 assets/logos/          # logos do Instituto de Computação (IC/UFF) e da UFF
@@ -104,11 +108,15 @@ cronológica: **fase regional primeiro, fase nacional depois**.
 
 ## Configuração
 
-`data/config.json` só muda quando a meta, a chave PIX ou os links mudarem:
+`data/config.json` só muda quando a meta, as datas da competição, a chave PIX ou os links mudarem:
 
 ```json
 {
   "meta": 30000,
+  "competicao": {
+    "inicio": "2027-07-13T00:00:00-03:00",
+    "fim": "2027-07-17T23:59:59-03:00"
+  },
   "pix": {
     "chave": "f904fb1f-0a9a-4cc9-9b17-9c9cd3ab7082",
     "titular": "Felipe Eizo Hanada (Niterói)",
@@ -124,6 +132,11 @@ cronológica: **fase regional primeiro, fase nacional depois**.
 
 `chave`, `copiaECola` e a imagem do QR Code precisam ser do **mesmo** PIX. Ao trocar um,
 troque os três.
+
+As datas de `competicao` são ISO 8601 com fuso (`-03:00`, horário de Brasília). Enquanto o início não
+chega, o cartão mostra dias, horas, minutos e segundos; no dia do início ele passa a avisar que a
+competição está acontecendo, e depois do fim, que ela já aconteceu. Sem `inicio` válido o cartão não
+aparece.
 
 ## Rodar localmente
 

@@ -1,5 +1,6 @@
 /* Lê data/config.json + data/doacoes.csv e monta a página. */
 import { calcularResumo, parseDoacoes } from './doacoes.js';
+import { lerData, situacao, tempoAte } from './contagem.js';
 
 const CONFIG_URL = './data/config.json';
 const CSV_URL = './data/doacoes.csv';
@@ -8,6 +9,12 @@ const DOACOES_POR_PAGINA = 6;
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const percentualFmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
 const $ = (seletor) => document.querySelector(seletor);
+
+/* As datas do config estão no horário de Brasília: formata no mesmo fuso para não mudar de dia. */
+const FUSO = 'America/Sao_Paulo';
+const formatarDia = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', timeZone: FUSO });
+const formatarDiaMesAno = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: FUSO });
+const formatarMesAno = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric', timeZone: FUSO });
 
 const estado = {
   doacoes: [],
@@ -26,6 +33,7 @@ async function iniciar() {
     aplicarConfig(config);
     estado.doacoes = parseDoacoes(csv);
     renderizarProgresso(Number(config.meta) || 0);
+    iniciarContagem(config.competicao);
     renderizarDoadores();
   } catch (erro) {
     console.error('[vaquinha]', erro);
@@ -201,6 +209,74 @@ function criar(tag, classe, texto) {
   return elemento;
 }
 
+/* ---------------- Contagem regressiva ---------------- */
+
+/*
+ * Os números são só decoração para os olhos: quem usa leitor de tela ouve a
+ * legenda, que muda uma vez por dia (e não a cada segundo).
+ */
+function iniciarContagem(competicao) {
+  const cartao = $('#contagem-card');
+  const inicio = lerData(competicao && competicao.inicio);
+  if (!cartao || !inicio) return;
+
+  const fim = lerData(competicao && competicao.fim);
+  const numeros = $('#contagem-numeros');
+  let relogio = null;
+
+  definirTexto('#contagem-periodo', formatarPeriodo(inicio, fim));
+
+  cartao.hidden = false;
+  desenhar();
+
+  // Só vale bater o relógio enquanto a data de início não chega.
+  if (situacao(inicio, fim) === 'antes') relogio = setInterval(desenhar, 1000);
+
+  function desenhar() {
+    const agora = new Date();
+    const momento = situacao(inicio, fim, agora);
+
+    if (momento === 'antes') {
+      const { dias, horas, minutos, segundos } = tempoAte(inicio, agora);
+
+      definirTexto('#contagem-dias', String(dias));
+      definirTexto('#contagem-horas', doisDigitos(horas));
+      definirTexto('#contagem-minutos', doisDigitos(minutos));
+      definirTexto('#contagem-segundos', doisDigitos(segundos));
+      definirTexto('#contagem-legenda', textoDaEspera(dias));
+      return;
+    }
+
+    // Chegou a data: os números saem de cena e o relógio para de bater.
+    if (numeros) numeros.hidden = true;
+    definirTexto(
+      '#contagem-legenda',
+      momento === 'durante'
+        ? 'A competição está acontecendo!'
+        : 'A competição já aconteceu. Obrigado a quem ajudou!'
+    );
+
+    clearInterval(relogio);
+    relogio = null;
+  }
+}
+
+function formatarPeriodo(inicio, fim) {
+  if (!fim) return formatarDiaMesAno.format(inicio);
+
+  // Mesmo mês e ano: "13 a 17 de julho de 2027" em vez de repetir o mês.
+  if (formatarMesAno.format(inicio) === formatarMesAno.format(fim)) {
+    return `${formatarDia.format(inicio)} a ${formatarDiaMesAno.format(fim)}`;
+  }
+
+  return `${formatarDiaMesAno.format(inicio)} a ${formatarDiaMesAno.format(fim)}`;
+}
+
+function textoDaEspera(dias) {
+  if (dias === 0) return 'Falta menos de 1 dia para a competição';
+  return dias === 1 ? 'Falta 1 dia para a competição' : `Faltam ${dias} dias para a competição`;
+}
+
 /* ---------------- Copiar ---------------- */
 
 function ativarBotoesDeCopia() {
@@ -287,6 +363,10 @@ function ajustarColunaAdesiva() {
 }
 
 /* ---------------- Utilidades ---------------- */
+
+function doisDigitos(numero) {
+  return String(numero).padStart(2, '0');
+}
 
 function definirTexto(seletor, texto) {
   const elemento = $(seletor);
