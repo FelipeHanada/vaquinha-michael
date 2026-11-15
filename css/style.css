@@ -12,6 +12,12 @@ body {
   height: 12px;
 }
 
+/* Destaques do texto ficam na cor normal, mesmo em parágrafo secundário */
+.text-secondary strong,
+.text-secondary a {
+  color: var(--bs-body-color);
+}
+
 /* Fotos no mobile: duas colunas em estilo masonry */
 .fotos {
   columns: 2;
