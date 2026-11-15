@@ -17,6 +17,7 @@
 
   async function init() {
     bindCopy();
+    bindColunaAdesiva();
 
     try {
       const [config, csv] = await Promise.all([getJSON(CONFIG_URL), getText(CSV_URL)]);
@@ -351,6 +352,46 @@
     } catch (_) {
       return false;
     }
+  }
+
+  /* ---------------- Coluna que acompanha a rolagem ---------------- */
+
+  /*
+   * Em telas grandes o bloco de doação fica preso enquanto a galeria rola.
+   * Quando ele é mais alto que a janela, o `top` recebe um valor negativo para
+   * que a base do bloco pare na base da tela, deixando o PIX e o convite do
+   * PCUFF à vista. Quem controla o movimento é o `position: sticky` do CSS, no
+   * compositor: nada é recalculado a cada quadro, então rolar rápido ou ir e
+   * voltar com a página não treme.
+   */
+  function bindColunaAdesiva() {
+    const coluna = document.querySelector('.coluna-adesiva');
+    if (!coluna) return;
+
+    const desktop = window.matchMedia('(min-width: 992px)');
+
+    // A altura do bloco não muda com a rolagem: mede só no load e no resize.
+    function ajustar() {
+      coluna.style.top = '';
+      if (!desktop.matches) return;
+
+      // A margem vem do CSS (`top`), para não existir o mesmo valor em dois lugares.
+      const margem = parseFloat(window.getComputedStyle(coluna).top) || 0;
+      const base = window.innerHeight - margem - coluna.offsetHeight;
+
+      // `top` positivo já é o padrão do CSS: só mexe quando o bloco não cabe.
+      if (base < margem) coluna.style.top = `${base}px`;
+    }
+
+    window.addEventListener('resize', ajustar);
+    window.addEventListener('load', ajustar);
+    desktop.addEventListener('change', ajustar);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(ajustar).catch(() => {});
+    }
+
+    ajustar();
   }
 
   /* ---------------- Utilidades ---------------- */

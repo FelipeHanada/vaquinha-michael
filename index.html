@@ -27,80 +27,83 @@
       <!-- Coluna esquerda: apresentação, meta e PIX -->
       <div class="col-12 col-lg-5">
 
-        <h1 class="h3 mb-2">Vaquinha para a ICPC Latino-Americana</h1>
+        <div class="coluna-adesiva">
+          <h1 class="h3 mb-2">Vaquinha para a ICPC Latino-Americana</h1>
 
-        <p class="text-secondary mb-3">
-          Olá! Nós somos o Felipe, o Luiz e o Rafael, da equipe de programação competitiva
-          <strong>Michael Eles Não Ligam pra Gente</strong>, da Universidade Federal Fluminense (UFF).
-          Em <strong>12 anos</strong>, somos a primeira equipe da UFF a se classificar para a final
-          brasileira da <strong><a href="https://maratona.sbc.org.br/sobre/index.html" target="_blank" rel="noopener">Maratona SBC de Programação</a></strong>,
-          em Uberlândia, e também a primeira na história da universidade a chegar à
-          <strong>Final Latino-Americana</strong>, em <strong>Monterrey (México)</strong>.
-        </p>
+          <p class="text-secondary mb-3">
+            Olá! Nós somos o Felipe, o Luiz e o Rafael, da equipe de programação competitiva
+            <strong>Michael Eles Não Ligam pra Gente</strong>, da Universidade Federal Fluminense (UFF).
+            Em <strong>12 anos</strong>, somos a primeira equipe da UFF a se classificar para a final
+            brasileira da <strong><a href="https://maratona.sbc.org.br/sobre/index.html" target="_blank" rel="noopener">Maratona SBC de Programação</a></strong>,
+            em Uberlândia, e também a primeira na história da universidade a chegar à
+            <strong>Final Latino-Americana</strong>, em <strong>Monterrey (México)</strong>.
+          </p>
 
-        <p class="text-secondary mb-4">
-          Lutamos muito por esse resultado, mas <strong>precisamos da sua ajuda</strong>! No momento,
-          nossa universidade não tem condições de custear nossa viagem, por isso estamos arrecadando
-          dinheiro para enviar nossa equipe e nosso coach para representar a UFF em
-          <strong>Monterrey</strong>! <strong>Qualquer valor ajuda!</strong>
-        </p>
+          <p class="text-secondary mb-4">
+            Lutamos muito por esse resultado, mas <strong>precisamos da sua ajuda</strong>! No momento,
+            nossa universidade não tem condições de custear nossa viagem, por isso estamos arrecadando
+            dinheiro para enviar nossa equipe e nosso coach para representar a UFF em
+            <strong>Monterrey</strong>! <strong>Qualquer valor ajuda!</strong>
+          </p>
 
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-baseline">
-              <span class="small text-secondary">Arrecadado</span>
-              <span class="small text-secondary">Meta: <span id="valor-meta">—</span></span>
+          <div class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-baseline">
+                <span class="small text-secondary">Arrecadado</span>
+                <span class="small text-secondary">Meta: <span id="valor-meta">—</span></span>
+              </div>
+              <div class="fs-2 fw-semibold" id="valor-atual">—</div>
+
+              <div class="progress my-3" id="barra-meta" role="progressbar"
+                   aria-label="Progresso da arrecadação"
+                   aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progress-bar" id="barra-fill" style="width: 0%"></div>
+              </div>
+
+              <div class="d-flex justify-content-between small text-secondary">
+                <span id="percentual">0%</span>
+                <span id="valor-falta">—</span>
+              </div>
+
+              <p class="small text-secondary mb-0 mt-2" id="progresso-status"></p>
             </div>
-            <div class="fs-2 fw-semibold" id="valor-atual">—</div>
-
-            <div class="progress my-3" id="barra-meta" role="progressbar"
-                 aria-label="Progresso da arrecadação"
-                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div class="progress-bar" id="barra-fill" style="width: 0%"></div>
-            </div>
-
-            <div class="d-flex justify-content-between small text-secondary">
-              <span id="percentual">0%</span>
-              <span id="valor-falta">—</span>
-            </div>
-
-            <p class="small text-secondary mb-0 mt-2" id="progresso-status"></p>
           </div>
-        </div>
 
-        <div class="card">
-          <div class="card-body">
-            <h2 class="h5 mb-3">Doar via PIX</h2>
+          <div class="card">
+            <div class="card-body">
+              <h2 class="h5 mb-3">Doar via PIX</h2>
 
-            <div class="text-center mb-3">
-              <img id="pix-qr" src="./assets/pix-qrcode.jpeg" alt="QR Code para doação via PIX" class="img-fluid border rounded">
-              <p class="small text-secondary mt-2 mb-0">Aponte a câmera do app do seu banco</p>
+              <div class="text-center mb-3">
+                <img id="pix-qr" src="./assets/pix-qrcode.jpeg" alt="QR Code para doação via PIX" class="img-fluid border rounded">
+                <p class="small text-secondary mt-2 mb-0">Aponte a câmera do app do seu banco</p>
+              </div>
+
+              <label class="form-label small text-secondary mb-1" for="pix-chave">Chave PIX</label>
+              <div class="input-group input-group-sm mb-3">
+                <input class="form-control font-monospace" id="pix-chave" type="text" readonly>
+                <button class="btn btn-outline-secondary" type="button" data-copy-target="pix-chave">Copiar</button>
+              </div>
+
+              <label class="form-label small text-secondary mb-1" for="pix-codigo">PIX copia-e-cola</label>
+              <textarea class="form-control font-monospace small mb-2" id="pix-codigo" rows="3" readonly></textarea>
+              <button class="btn btn-dark btn-sm w-100" type="button" data-copy-target="pix-codigo">Copiar código PIX</button>
+
+              <p class="small text-secondary mb-0 mt-2">Titular: <span id="pix-titular">—</span></p>
             </div>
+          </div>
 
-            <label class="form-label small text-secondary mb-1" for="pix-chave">Chave PIX</label>
-            <div class="input-group input-group-sm mb-3">
-              <input class="form-control font-monospace" id="pix-chave" type="text" readonly>
-              <button class="btn btn-outline-secondary" type="button" data-copy-target="pix-chave">Copiar</button>
+          <div class="card mt-3">
+            <div class="card-body">
+              <h2 class="h6 mb-2">É da UFF? Conheça o PCUFF, nosso projeto de Programação Competitiva!</h2>
+              <p class="small text-secondary mb-0">
+                O PCUFF é um projeto criado pelos alunos maratonistas do Instituto de Computação.
+                Nos encontramos <strong>toda quinta-feira, no laboratório 307</strong>, com apresentações,
+                competições e discussões. <strong>Qualquer pessoa pode participar</strong> (não precisa
+                ser da computação) e <strong>não há inscrição</strong>.
+              </p>
             </div>
-
-            <label class="form-label small text-secondary mb-1" for="pix-codigo">PIX copia-e-cola</label>
-            <textarea class="form-control font-monospace small mb-2" id="pix-codigo" rows="3" readonly></textarea>
-            <button class="btn btn-dark btn-sm w-100" type="button" data-copy-target="pix-codigo">Copiar código PIX</button>
-
-            <p class="small text-secondary mb-0 mt-2">Titular: <span id="pix-titular">—</span></p>
           </div>
-        </div>
 
-        <div class="card mt-3">
-          <div class="card-body">
-            <h2 class="h6 mb-2">É da UFF? Conheça o PCUFF, nosso projeto de Programação Competitiva!</h2>
-            <p class="small text-secondary mb-0">
-              O PCUFF é um projeto criado pelos alunos maratonistas do Instituto de Computação.
-              Nos encontramos <strong>toda quinta-feira, no laboratório 307</strong>, com apresentações,
-              competições e discussões. <strong>Qualquer pessoa pode participar</strong> (não precisa
-              ser da computação) e <strong>não há inscrição</strong>.
-            </p>
-          </div>
         </div>
 
       </div>

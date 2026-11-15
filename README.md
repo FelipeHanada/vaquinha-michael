@@ -23,6 +23,12 @@ Coaches:
 galeria, com as fotos espalhadas e sobrepostas como fotos jogadas no chão. Abaixo, em largura total,
 a lista de doadores com paginação e os contatos.
 
+Enquanto a galeria rola, a coluna da esquerda acompanha a leitura: o bloco rola junto com a página
+e, quando termina de entrar na tela, para com a base na base da janela — deixando o PIX e o convite
+do PCUFF à vista — até que a coluna acabe, pouco antes da linha que separa a seção "Quem já apoiou".
+Quem move o bloco é o `position: sticky` (no compositor, sem cálculo a cada quadro), então rolar
+rápido não treme.
+
 **Mobile:** coluna única — progresso → PIX → PCUFF → fotos (duas colunas) → doadores → contato.
 
 1. Barra de progresso com a meta de arrecadação.
@@ -45,6 +51,7 @@ Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro. Sem build, sem back-end.
 index.html
 css/style.css          # poucos ajustes sobre o Bootstrap
 js/main.js             # lê o CSV, calcula o progresso, pagina a lista, copia o PIX
+                       # e ajusta a coluna que acompanha a rolagem
 data/config.json       # meta, chave PIX, payload e links
 data/doacoes.csv       # uma linha por doação — é o arquivo que você edita
 assets/pix-qrcode.jpeg # QR Code do PIX

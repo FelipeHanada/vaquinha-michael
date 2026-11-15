@@ -59,8 +59,19 @@ body {
   padding: 0.35rem 0.1rem 0;
 }
 
-/* Desktop: fotos espalhadas, sobrepostas, como jogadas no chão */
+/*
+ * A partir do desktop a coluna de doação acompanha a rolagem da galeria.
+ * O `position: sticky` faz o trabalho todo no compositor (nada é recalculado a
+ * cada quadro). O js só ajusta o `top` uma vez, quando o bloco é mais alto que
+ * a janela, para que a base dele pare na base da tela em vez do topo.
+ */
 @media (min-width: 992px) {
+  .coluna-adesiva {
+    position: sticky;
+    top: 1rem;
+  }
+
+  /* Fotos espalhadas, sobrepostas, como jogadas no chão */
   .fotos {
     columns: auto;
     display: flex;
