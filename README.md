@@ -5,7 +5,6 @@ Página estática de arrecadação de fundos para levar a equipe **Michael Eles 
 
 - Instagram: <https://www.instagram.com/progcompuff/>
 - WhatsApp do PCUFF: <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
-- Contato Felipe (WhatsApp): WhatsApp do PCUFF — <https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq>
 
 Equipe:
 
@@ -33,10 +32,10 @@ a lista de doadores com paginação e os contatos.
 5. QR Code do PIX.
 6. Código PIX copia-e-cola com botão de copiar.
 7. Convite para o PCUFF (encontros às quintas, no laboratório 307).
-8. Botões de contato ao lado da lista de doadores (Instagram, WhatsApp do PCUFF e contato do Felipe).
+8. Botões de contato ao lado da lista de doadores (Instagram e WhatsApp do PCUFF).
 9. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante e dos
    coaches, as URLs visíveis dos contatos e um aviso de que problemas na página podem ser
-   reportados no WhatsApp do Felipe.
+   reportados no WhatsApp do PCUFF.
 
 Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro. Sem build, sem back-end.
 
@@ -111,8 +110,7 @@ cronológica: **fase regional primeiro, fase nacional depois**.
   },
   "links": {
     "instagram": "https://www.instagram.com/progcompuff/",
-    "whatsapp": "https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq",
-    "contato": "https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq"
+    "whatsapp": "https://chat.whatsapp.com/ID9LWRt21p2AANS2aA1Nsq"
   }
 }
 ```
