@@ -29,6 +29,11 @@ body {
   width: auto;
 }
 
+/* O SVG da UFF tem respiro interno; desce 4px para a base das duas marcas alinhar */
+.logo-instituicao--uff img {
+  transform: translateY(4px);
+}
+
 /* Fotos no mobile: duas colunas em estilo masonry */
 .fotos {
   columns: 2;
