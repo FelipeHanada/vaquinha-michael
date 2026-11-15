@@ -13,23 +13,30 @@ Equipe:
 - Luiz Eduardo Miranda — <https://www.linkedin.com/in/luizeduram/>
 - Rafael Rocha Damasceno — <https://www.linkedin.com/in/rafael-rd/>
 
+Coaches:
+
+- Luis Antonio Brasil Kowada — <https://www.ic.uff.br/blog/pessoas/luis-antonio-brasil-kowada/>
+- Igor Machado Coelho — <https://www.ic.uff.br/blog/pessoas/igor-machado-coelho/>
+
 ## A página
 
-**Desktop:** duas colunas — à esquerda a meta, o progresso e o PIX; à direita as fotos,
-espalhadas e sobrepostas como fotos jogadas no chão. Abaixo, em largura total, a lista de
-doadores com paginação e os contatos.
+**Desktop:** duas colunas — à esquerda a meta, o progresso, o PIX e o convite do PCUFF; à direita a
+galeria, com as fotos espalhadas e sobrepostas como fotos jogadas no chão. Abaixo, em largura total,
+a lista de doadores com paginação e os contatos.
 
-**Mobile:** coluna única — progresso → PIX → fotos (duas colunas) → doadores → contato.
+**Mobile:** coluna única — progresso → PIX → PCUFF → fotos (duas colunas) → doadores → contato.
 
 1. Barra de progresso com a meta de arrecadação.
 2. Indicador do valor já arrecadado (e quanto falta).
 3. Lista de doadores lida de um CSV, com paginação de 6 por página.
-4. Fotos do time.
+4. Galeria com as fotos do time, cada uma com legenda.
 5. QR Code do PIX.
 6. Código PIX copia-e-cola com botão de copiar.
-7. Botões de contato ao lado da lista de doadores (Instagram, WhatsApp do PCUFF e contato do Felipe).
-8. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante, as URLs visíveis
-   dos contatos e um aviso de que problemas na página podem ser reportados no WhatsApp do Felipe.
+7. Convite para o PCUFF (encontros às quintas, no laboratório 307).
+8. Botões de contato ao lado da lista de doadores (Instagram, WhatsApp do PCUFF e contato do Felipe).
+9. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante e dos
+   coaches, as URLs visíveis dos contatos e um aviso de que problemas na página podem ser
+   reportados no WhatsApp do Felipe.
 
 Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro. Sem build, sem back-end.
 
