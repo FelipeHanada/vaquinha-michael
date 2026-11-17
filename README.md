@@ -21,7 +21,8 @@ Coaches:
 
 **Desktop:** duas colunas — à esquerda a meta, o progresso, a contagem regressiva, o PIX e o convite do
 PCUFF; à direita a galeria, com as fotos espalhadas e sobrepostas como fotos jogadas no chão. Abaixo,
-em largura total, a lista de doadores com paginação e os contatos.
+em largura total, a lista de doadores com paginação e, ao lado dela, o ranking das maiores doações
+acima dos contatos.
 
 Enquanto a galeria rola, a coluna da esquerda acompanha a leitura: o bloco rola junto com a página
 e, quando termina de entrar na tela, para com a base na base da janela — deixando o PIX e o convite
@@ -30,19 +31,21 @@ Quem move o bloco é o `position: sticky` (no compositor, sem cálculo a cada qu
 rápido não treme.
 
 **Mobile:** coluna única — progresso → contagem regressiva → PIX → PCUFF → fotos (duas colunas) →
-doadores → contato.
+doadores → ranking → contato.
 
 1. Barra de progresso com a meta de arrecadação.
 2. Indicador do valor já arrecadado (e quanto falta).
 3. Contagem regressiva para a competição, com dias, horas, minutos e segundos.
 4. Lista de doadores lida de um CSV, com paginação de 6 por página, e um aviso de que as doações
    entram manualmente (pode levar algumas horas até aparecerem).
-5. Galeria com as fotos do time, cada uma com legenda.
-6. QR Code do PIX.
-7. Código PIX copia-e-cola com botão de copiar.
-8. Convite para o PCUFF (encontros às quintas, no laboratório 307).
-9. Botões de contato ao lado da lista de doadores (Instagram e WhatsApp do PCUFF).
-10. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante e dos
+5. Ranking das 5 maiores doações, acima dos contatos. Empates ficam na ordem da lista (mais
+   recentes primeiro), e a mesma pessoa pode aparecer mais de uma vez se doou mais de uma vez.
+6. Galeria com as fotos do time, cada uma com legenda.
+7. QR Code do PIX.
+8. Código PIX copia-e-cola com botão de copiar.
+9. Convite para o PCUFF (encontros às quintas, no laboratório 307).
+10. Botões de contato ao lado da lista de doadores (Instagram e WhatsApp do PCUFF).
+11. Rodapé com as logos do Instituto de Computação e da UFF, o LinkedIn de cada integrante e dos
     coaches, as URLs visíveis dos contatos e um aviso de que problemas na página podem ser
     reportados no WhatsApp do PCUFF.
 
@@ -54,7 +57,7 @@ Stack: HTML + Bootstrap 5 (CDN) + JavaScript puro em módulos ES. Sem build, sem
 index.html
 css/style.css          # poucos ajustes sobre o Bootstrap
 js/main.js             # monta a página: config, progresso, contagem, doadores, PIX e rolagem
-js/doacoes.js          # lê o CSV e calcula os totais (sem DOM)
+js/doacoes.js          # lê o CSV, calcula os totais e o ranking (sem DOM)
 js/contagem.js         # calcula a contagem regressiva da competição (sem DOM)
 data/config.json       # meta, datas da competição, chave PIX, payload e links
 data/doacoes.csv       # uma linha por doação — é o arquivo que você edita

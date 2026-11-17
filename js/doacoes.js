@@ -33,6 +33,16 @@ export function calcularResumo(doacoes, meta) {
   return { total, percentual, falta: Math.max(0, meta - total) };
 }
 
+/**
+ * As maiores doações, da maior para a menor.
+ * Empates mantêm a ordem da lista, que já vem da mais recente para a mais antiga.
+ */
+export function maioresDoacoes(doacoes, limite = 5) {
+  return [...doacoes]
+    .sort((a, b) => b.valor - a.valor)
+    .slice(0, Math.max(0, limite));
+}
+
 /* ---------------- CSV ---------------- */
 
 /** Escolhe o delimitador mais frequente na primeira linha útil do arquivo. */

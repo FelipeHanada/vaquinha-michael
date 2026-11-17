@@ -1,10 +1,11 @@
 /* Lê data/config.json + data/doacoes.csv e monta a página. */
-import { calcularResumo, parseDoacoes } from './doacoes.js';
+import { calcularResumo, maioresDoacoes, parseDoacoes } from './doacoes.js';
 import { lerData, situacao, tempoAte } from './contagem.js';
 
 const CONFIG_URL = './data/config.json';
 const CSV_URL = './data/doacoes.csv';
 const DOACOES_POR_PAGINA = 6;
+const RANKING_TAMANHO = 5;
 
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const percentualFmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });
@@ -35,6 +36,7 @@ async function iniciar() {
     renderizarProgresso(Number(config.meta) || 0);
     iniciarContagem(config.competicao);
     renderizarDoadores();
+    renderizarRanking();
   } catch (erro) {
     console.error('[vaquinha]', erro);
     mostrarErro();
@@ -207,6 +209,30 @@ function criar(tag, classe, texto) {
   if (classe) elemento.className = classe;
   if (texto !== undefined) elemento.textContent = texto;
   return elemento;
+}
+
+function renderizarRanking() {
+  const secao = $('#ranking-secao');
+  const lista = $('#ranking-doacoes');
+  if (!secao || !lista) return;
+
+  const maiores = maioresDoacoes(estado.doacoes, RANKING_TAMANHO);
+  secao.hidden = maiores.length === 0;
+  lista.replaceChildren();
+
+  maiores.forEach((doacao, indice) => {
+    const posicao = criar('span', 'ranking-posicao', String(indice + 1));
+    posicao.dataset.posicao = String(indice + 1);
+
+    const item = criar('li', 'list-group-item d-flex align-items-center gap-2 px-0');
+    item.append(
+      posicao,
+      criar('span', 'ranking-nome text-break', doacao.nome),
+      criar('span', 'text-success fw-semibold text-nowrap', brl.format(doacao.valor))
+    );
+
+    lista.append(item);
+  });
 }
 
 /* ---------------- Contagem regressiva ---------------- */

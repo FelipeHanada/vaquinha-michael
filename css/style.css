@@ -55,6 +55,36 @@ body {
   color: var(--bs-secondary-color);
 }
 
+/* Ranking das maiores doações */
+.ranking-doacoes {
+  list-style: none;
+}
+
+.ranking-posicao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+  background-color: var(--bs-secondary-bg);
+  border-radius: 50%;
+}
+
+/* Pódio: ouro, prata e bronze discretos, no tom do resto da página */
+.ranking-posicao[data-posicao="1"] { background-color: #fff3bf; color: #7a5c00; }
+.ranking-posicao[data-posicao="2"] { background-color: #e9ecef; color: #495057; }
+.ranking-posicao[data-posicao="3"] { background-color: #f8e0cd; color: #8a4b1f; }
+
+/* `min-width: 0` deixa o nome quebrar em vez de empurrar o valor para fora */
+.ranking-nome {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* Logos institucionais no rodapé */
 .logo-instituicao {
   display: inline-block;
