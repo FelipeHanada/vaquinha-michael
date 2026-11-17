@@ -35,11 +35,12 @@ export function calcularResumo(doacoes, meta) {
 
 /**
  * As maiores doações, da maior para a menor.
- * Empates mantêm a ordem da lista, que já vem da mais recente para a mais antiga.
+ * Empates vão para quem doou antes: data mais antiga primeiro e, no mesmo dia,
+ * a ordem em que a doação foi registrada no CSV.
  */
-export function maioresDoacoes(doacoes, limite = 5) {
+export function maioresDoacoes(doacoes, limite = 10) {
   return [...doacoes]
-    .sort((a, b) => b.valor - a.valor)
+    .sort((a, b) => b.valor - a.valor || compararPorDataMaisAntiga(a, b) || a.ordem - b.ordem)
     .slice(0, Math.max(0, limite));
 }
 
@@ -127,6 +128,18 @@ function compararPorData(a, b) {
   const dataB = b.data ? b.data.getTime() : 0;
 
   return dataB - dataA || b.ordem - a.ordem;
+}
+
+/** Data mais antiga primeiro; doações sem data ficam por último. */
+function compararPorDataMaisAntiga(a, b) {
+  const dataA = a.data ? a.data.getTime() : null;
+  const dataB = b.data ? b.data.getTime() : null;
+
+  if (dataA === dataB) return 0;
+  if (dataA === null) return 1;
+  if (dataB === null) return -1;
+
+  return dataA - dataB;
 }
 
 /* ---------------- Valores e datas ---------------- */

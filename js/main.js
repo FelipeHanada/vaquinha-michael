@@ -5,7 +5,7 @@ import { lerData, situacao, tempoAte } from './contagem.js';
 const CONFIG_URL = './data/config.json';
 const CSV_URL = './data/doacoes.csv';
 const DOACOES_POR_PAGINA = 6;
-const RANKING_TAMANHO = 5;
+const RANKING_TAMANHO = 10;
 
 const brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 const percentualFmt = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 });

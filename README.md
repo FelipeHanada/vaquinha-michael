@@ -38,8 +38,9 @@ doadores → ranking → contato.
 3. Contagem regressiva para a competição, com dias, horas, minutos e segundos.
 4. Lista de doadores lida de um CSV, com paginação de 6 por página, e um aviso de que as doações
    entram manualmente (pode levar algumas horas até aparecerem).
-5. Ranking das 5 maiores doações, acima dos contatos. Empates ficam na ordem da lista (mais
-   recentes primeiro), e a mesma pessoa pode aparecer mais de uma vez se doou mais de uma vez.
+5. Ranking das 10 maiores doações, acima dos contatos. Empates vão para quem doou antes (data mais
+   antiga primeiro e, no mesmo dia, a ordem de registro no CSV), e a mesma pessoa pode aparecer mais
+   de uma vez se doou mais de uma vez.
 6. Galeria com as fotos do time, cada uma com legenda.
 7. QR Code do PIX.
 8. Código PIX copia-e-cola com botão de copiar.
