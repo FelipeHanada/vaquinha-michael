@@ -40,8 +40,33 @@ export function calcularResumo(doacoes, meta) {
  */
 export function maioresDoacoes(doacoes, limite = 10) {
   return [...doacoes]
-    .sort((a, b) => b.valor - a.valor || compararPorDataMaisAntiga(a, b) || a.ordem - b.ordem)
+    .sort((a, b) => b.valor - a.valor || compararData(a, b, 1) || a.ordem - b.ordem)
     .slice(0, Math.max(0, limite));
+}
+
+/** Doações cujo nome contém o termo, sem diferenciar maiúsculas nem acentos. */
+export function buscarPorNome(doacoes, termo) {
+  const alvo = normalizarTexto(termo).trim();
+  if (!alvo) return doacoes;
+
+  return doacoes.filter((doacao) => normalizarTexto(doacao.nome).includes(alvo));
+}
+
+/**
+ * Ordena uma cópia da lista. Critérios: `data-desc` (padrão), `data-asc`,
+ * `nome-asc`, `nome-desc`, `valor-desc` e `valor-asc`.
+ */
+export function ordenarDoacoes(doacoes, criterio) {
+  const comparadores = {
+    'data-desc': compararPorData,
+    'data-asc': (a, b) => compararData(a, b, 1) || a.ordem - b.ordem,
+    'nome-asc': (a, b) => compararPorNome(a, b) || a.ordem - b.ordem,
+    'nome-desc': (a, b) => compararPorNome(b, a) || a.ordem - b.ordem,
+    'valor-desc': (a, b) => b.valor - a.valor || compararPorData(a, b),
+    'valor-asc': (a, b) => a.valor - b.valor || compararPorData(a, b)
+  };
+
+  return [...doacoes].sort(comparadores[criterio] || comparadores['data-desc']);
 }
 
 /* ---------------- CSV ---------------- */
@@ -96,8 +121,17 @@ function mapearColunas(campos) {
 }
 
 function normalizarCabecalho(valor) {
-  return String(valor).replace(/^\uFEFF/, '').trim().toLowerCase()
+  return normalizarTexto(String(valor).replace(/^\uFEFF/, '').trim());
+}
+
+/** Texto sem acentos e em minúsculas, para comparar nomes e cabeçalhos. */
+function normalizarTexto(valor) {
+  return String(valor).toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function compararPorNome(a, b) {
+  return a.nome.localeCompare(b.nome, 'pt-BR', { sensitivity: 'base' });
 }
 
 function criarDoacao(campos, colunas, ordem) {
@@ -124,14 +158,14 @@ function ehAnonimo(nome) {
 }
 
 function compararPorData(a, b) {
-  const dataA = a.data ? a.data.getTime() : 0;
-  const dataB = b.data ? b.data.getTime() : 0;
-
-  return dataB - dataA || b.ordem - a.ordem;
+  return compararData(a, b, -1) || b.ordem - a.ordem;
 }
 
-/** Data mais antiga primeiro; doações sem data ficam por último. */
-function compararPorDataMaisAntiga(a, b) {
+/**
+ * Compara pela data na direção pedida (`1` crescente, `-1` decrescente).
+ * Doações sem data ficam sempre por último.
+ */
+function compararData(a, b, direcao) {
   const dataA = a.data ? a.data.getTime() : null;
   const dataB = b.data ? b.data.getTime() : null;
 
@@ -139,7 +173,7 @@ function compararPorDataMaisAntiga(a, b) {
   if (dataA === null) return 1;
   if (dataB === null) return -1;
 
-  return dataA - dataB;
+  return (dataA - dataB) * direcao;
 }
 
 /* ---------------- Valores e datas ---------------- */

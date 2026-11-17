@@ -1,5 +1,5 @@
 /* Lê data/config.json + data/doacoes.csv e monta a página. */
-import { calcularResumo, maioresDoacoes, parseDoacoes } from './doacoes.js';
+import { buscarPorNome, calcularResumo, maioresDoacoes, ordenarDoacoes, parseDoacoes } from './doacoes.js';
 import { lerData, situacao, tempoAte } from './contagem.js';
 
 const CONFIG_URL = './data/config.json';
@@ -19,6 +19,8 @@ const formatarMesAno = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: '
 
 const estado = {
   doacoes: [],
+  busca: '',
+  ordenacao: 'data-desc',
   pagina: 1
 };
 
@@ -26,6 +28,7 @@ document.addEventListener('DOMContentLoaded', iniciar);
 
 async function iniciar() {
   ativarBotoesDeCopia();
+  ativarControlesDoadores();
   ajustarColunaAdesiva();
 
   try {
@@ -105,19 +108,21 @@ function renderizarProgresso(meta) {
 }
 
 function renderizarDoadores() {
-  const quantidade = estado.doacoes.length;
-  definirTexto(
-    '#doadores-resumo',
-    quantidade ? `${quantidade} doaç${quantidade === 1 ? 'ão' : 'ões'} recebida${quantidade === 1 ? '' : 's'}` : ''
-  );
-
   estado.pagina = 1;
   desenharDoadores();
+}
+
+/** Lista já filtrada pela busca e na ordem escolhida no seletor. */
+function doacoesVisiveis() {
+  return ordenarDoacoes(buscarPorNome(estado.doacoes, estado.busca), estado.ordenacao);
 }
 
 function desenharDoadores() {
   const lista = $('#lista-doadores');
   if (!lista) return;
+
+  const visiveis = doacoesVisiveis();
+  atualizarResumoDoadores(visiveis.length);
 
   lista.replaceChildren();
 
@@ -127,15 +132,40 @@ function desenharDoadores() {
     return;
   }
 
-  const totalPaginas = Math.ceil(estado.doacoes.length / DOACOES_POR_PAGINA);
+  if (!visiveis.length) {
+    lista.append(criarItem(`Nenhuma doação encontrada para "${estado.busca.trim()}".`));
+    desenharPaginacao(0);
+    return;
+  }
+
+  const totalPaginas = Math.ceil(visiveis.length / DOACOES_POR_PAGINA);
   estado.pagina = Math.min(Math.max(1, estado.pagina), totalPaginas);
 
   const inicio = (estado.pagina - 1) * DOACOES_POR_PAGINA;
-  estado.doacoes
+  visiveis
     .slice(inicio, inicio + DOACOES_POR_PAGINA)
     .forEach((doacao) => lista.append(criarLinhaDoador(doacao)));
 
   desenharPaginacao(totalPaginas);
+}
+
+function atualizarResumoDoadores(encontradas) {
+  const total = estado.doacoes.length;
+
+  if (!total) {
+    definirTexto('#doadores-resumo', '');
+    return;
+  }
+
+  if (encontradas === total) {
+    definirTexto(
+      '#doadores-resumo',
+      `${total} doaç${total === 1 ? 'ão' : 'ões'} recebida${total === 1 ? '' : 's'}`
+    );
+    return;
+  }
+
+  definirTexto('#doadores-resumo', `${encontradas} de ${total} doações`);
 }
 
 function criarLinhaDoador(doacao) {
@@ -233,6 +263,32 @@ function renderizarRanking() {
 
     lista.append(item);
   });
+}
+
+/* ---------------- Busca e ordenação dos doadores ---------------- */
+
+function ativarControlesDoadores() {
+  const busca = $('#busca-doadores');
+  if (busca) {
+    busca.addEventListener('input', () => {
+      if (!estado.doacoes.length) return;
+
+      estado.busca = busca.value;
+      estado.pagina = 1;
+      desenharDoadores();
+    });
+  }
+
+  const ordenacao = $('#ordenacao-doadores');
+  if (ordenacao) {
+    ordenacao.addEventListener('change', () => {
+      if (!estado.doacoes.length) return;
+
+      estado.ordenacao = ordenacao.value;
+      estado.pagina = 1;
+      desenharDoadores();
+    });
+  }
 }
 
 /* ---------------- Contagem regressiva ---------------- */

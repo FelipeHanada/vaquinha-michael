@@ -218,9 +218,28 @@
           sua apareça aqui. O comprovante do PIX é a garantia de que ela foi registrada.
         </div>
 
+        <div class="row g-2 mb-3">
+          <div class="col-12 col-sm-7">
+            <label class="visually-hidden" for="busca-doadores">Buscar doação pelo nome</label>
+            <input class="form-control form-control-sm" id="busca-doadores" type="search"
+                   placeholder="Buscar por nome" autocomplete="off">
+          </div>
+          <div class="col-12 col-sm-5">
+            <label class="visually-hidden" for="ordenacao-doadores">Ordenar a lista de doações</label>
+            <select class="form-select form-select-sm" id="ordenacao-doadores">
+              <option value="data-desc" selected>Data: mais recente primeiro</option>
+              <option value="data-asc">Data: mais antiga primeiro</option>
+              <option value="nome-asc">Nome: A-Z</option>
+              <option value="nome-desc">Nome: Z-A</option>
+              <option value="valor-desc">Valor: maior primeiro</option>
+              <option value="valor-asc">Valor: menor primeiro</option>
+            </select>
+          </div>
+        </div>
+
         <ul class="list-group mb-3" id="lista-doadores"></ul>
 
-        <nav aria-label="Paginação da lista de doadores">
+        <nav class="d-flex justify-content-center" aria-label="Paginação da lista de doadores">
           <ul class="pagination pagination-sm mb-0" id="paginacao"></ul>
         </nav>
       </div>

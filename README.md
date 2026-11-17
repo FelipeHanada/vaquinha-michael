@@ -36,8 +36,10 @@ doadores → ranking → contato.
 1. Barra de progresso com a meta de arrecadação.
 2. Indicador do valor já arrecadado (e quanto falta).
 3. Contagem regressiva para a competição, com dias, horas, minutos e segundos.
-4. Lista de doadores lida de um CSV, com paginação de 6 por página, e um aviso de que as doações
-   entram manualmente (pode levar algumas horas até aparecerem).
+4. Lista de doadores lida de um CSV, com busca por nome (sem diferenciar maiúsculas nem acentos),
+   seletor de ordenação (data, nome ou valor, em ordem crescente ou decrescente) e paginação de 6 por
+   página, centralizada. Um aviso lembra que as doações entram manualmente (pode levar algumas horas
+   até aparecerem).
 5. Ranking das 10 maiores doações, acima dos contatos. Empates vão para quem doou antes (data mais
    antiga primeiro e, no mesmo dia, a ordem de registro no CSV), e a mesma pessoa pode aparecer mais
    de uma vez se doou mais de uma vez.
